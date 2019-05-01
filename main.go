@@ -20,19 +20,19 @@ type Route struct {
 type Toramaru struct {
 	Port   int
 	Routes []Route
+	Help   bool
 }
 
 const EOA = "__EOA__" // end of args
 func argparse(args []string) (toramaru *Toramaru, err error) {
-	toramaru = &Toramaru{}
+	toramaru = &Toramaru{Help: false}
 	args = append(args, EOA)
 	for i := 1; i < len(args)-1; i += 2 {
 		opt := args[i]
 		arg := args[i+1]
 		switch {
 		case opt == "-h" || opt == "--help":
-			fmt.Print(help()) // FIXME: めっちゃ副作用
-			return nil, errors.New("")
+			toramaru.Help = true
 
 		case opt == "-p" && arg != EOA:
 			toramaru.Port, err = strconv.Atoi(arg)
@@ -66,7 +66,11 @@ func help() string {
 
 func main() {
 	toramaru, err := argparse(os.Args)
-	if err != nil {
+	switch {
+	case toramaru.Help:
+		fmt.Print(help())
+		os.Exit(0)
+	case err != nil:
 		fmt.Println(err)
 		os.Exit(-1)
 	}
