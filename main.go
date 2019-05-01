@@ -67,12 +67,12 @@ func help() string {
 func main() {
 	toramaru, err := argparse(os.Args)
 	switch {
-	case toramaru.Help:
-		fmt.Print(help())
-		os.Exit(0)
 	case err != nil:
 		fmt.Println(err)
 		os.Exit(-1)
+	case toramaru.Help:
+		fmt.Print(help())
+		os.Exit(0)
 	}
 
 	director := func(request *http.Request) {
