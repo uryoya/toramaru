@@ -12,6 +12,18 @@ import (
 	"github.com/uryoya/toramaru/route"
 )
 
+const help string = `USAGE: toramaru [options...]
+
+  OPTIONS:
+    -p --port        [PORT]  -- -p 8080
+    -r --route_proxy [ROUTE_PROXY]
+    -h --help  -- show this help
+
+  ROUTE_PROXY: [LOCATION]>[HOST]
+    example:
+    "/path/to/location>localhost:8070"
+`
+
 type Toramaru struct {
 	Port   int
 	Routes []route.Route
@@ -49,19 +61,6 @@ func argparse(args []string) (toramaru *Toramaru, err error) {
 	return toramaru, nil
 }
 
-func help() string {
-	return "" +
-		"USAGE: toramaru [options...]\n\n" +
-		"  OPTIONS:\n" +
-		"    -p --port        [PORT]  -- -p 8080\n" +
-		"    -r --route_proxy [ROUTE_PROXY]\n" +
-		"    -h --help  -- show this help\n" +
-		"\n" +
-		"  ROUTE_PROXY: [LOCATION]>[HOST]\n" +
-		"    example:\n" +
-		"    \"/path/to/location>localhost:8070\"\n"
-}
-
 func main() {
 	toramaru, err := argparse(os.Args)
 	switch {
@@ -69,7 +68,7 @@ func main() {
 		fmt.Println(err)
 		os.Exit(-1)
 	case toramaru.Help:
-		fmt.Print(help())
+		fmt.Print(help)
 		os.Exit(0)
 	}
 
