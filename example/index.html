@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset=utf8>
+		<title>Hello Proxy</title>
+	</head>
+	<body>
+		<h1>Hello, Proxy!</h1>
+		<input id="in"></input>
+		<button id="submit-button">submit</button>
+		<div id="result"></div>
+
+<script>
+const input = document.querySelector("#in");
+const submit = document.querySelector("#submit-button");
+const result = document.querySelector("#result");
+submit.addEventListener("click", function() {
+	const text = input.value;
+	fetch("http://localhost:8080/api/echo", {
+		method: "POST",
+		body: JSON.stringify({"text": text})
+	})
+		.then(res => res.json())
+		.then(json => {
+			result.innerText = json["text"];
+		})
+		.catch(e => console.log(e));
+});
+</script>
+
+	</body>
+</html>
