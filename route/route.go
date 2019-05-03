@@ -2,6 +2,7 @@ package route
 
 import (
 	"errors"
+	"regexp"
 	"strings"
 )
 
@@ -31,4 +32,9 @@ func splitAsLocationHost(s string) (location string, host string, err error) {
 		host = buf[1]
 	}
 	return location, host, err
+}
+
+func (r *Route) Match(path string) bool {
+	matched, _ := regexp.MatchString(r.Location+`.*`, path)
+	return matched
 }

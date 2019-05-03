@@ -3,13 +3,13 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/uryoya/toramaru/route"
 	"log"
 	"net/http"
 	"net/http/httputil"
 	"os"
-	"regexp"
 	"strconv"
+
+	"github.com/uryoya/toramaru/route"
 )
 
 type Toramaru struct {
@@ -78,8 +78,7 @@ func main() {
 		request.URL.Scheme = "http"
 
 		for _, route := range toramaru.Routes {
-			matched, _ := regexp.MatchString(route.Location+`.*`, request.URL.Path)
-			if matched {
+			if route.Match(request.URL.Path) {
 				request.URL.Host = route.Host
 				break
 			}
