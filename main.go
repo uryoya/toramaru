@@ -56,7 +56,11 @@ func main() {
 		Handler: rp,
 	}
 
-	log.Printf("toramaru running on: %d\n", toramaru.Port)
+	fmt.Println("proxies:")
+	for _, route := range toramaru.Routes {
+		fmt.Printf("%s => %s\n", route.Location, route.Host)
+	}
+	fmt.Printf("toramaru running on: %d\n", toramaru.Port)
 	if err := server.ListenAndServe(); err != nil {
 		log.Fatal(err.Error())
 	}
