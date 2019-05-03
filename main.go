@@ -50,13 +50,16 @@ func argparse(args []string) (toramaru *Toramaru, err error) {
 }
 
 func help() string {
-	return `USAGE: toramaru [options...]
-
-	OPTIONS:
-		-p [PORT]  -- -p 8080
-		-r [ROUTE] -- -r "localhost:8070/a/" -r "localhost:8071/b/"
-		-h --help  -- show this help
-	`
+	return "" +
+		"USAGE: toramaru [options...]\n\n" +
+		"  OPTIONS:\n" +
+		"    -p --port        [PORT]  -- -p 8080\n" +
+		"    -r --route_proxy [ROUTE_PROXY]\n" +
+		"    -h --help  -- show this help\n" +
+		"\n" +
+		"  ROUTE_PROXY: [LOCATION]>[HOST]\n" +
+		"    example:\n" +
+		"    \"/path/to/location>localhost:8070\"\n"
 }
 
 func main() {
