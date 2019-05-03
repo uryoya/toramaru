@@ -1,65 +1,28 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"net/http/httputil"
 	"os"
-	"strconv"
-
-	"github.com/uryoya/toramaru/route"
 )
 
-const help string = `USAGE: toramaru [options...]
+const version string = "0.1.0-SNAPSHOT"
+const help string = `USAGE: toramaru [OPTIONS...]
 
   OPTIONS:
-    -p --port        [PORT]  -- -p 8080
-    -r --route_proxy [ROUTE_PROXY]
-    -h --help  -- show this help
+    -p, --port [PORT]                使用するポートを指定
+    -r, --route-proxy [ROUTE_PROXY]  リバースプロキシを指定
 
-  ROUTE_PROXY: [LOCATION]>[HOST]
-    example:
-    "/path/to/location>localhost:8070"
+    -h, --help                       このヘルプを表示
+    -v, --version                    バージョンを表示
+
+    ROUTE_PROXY: [LOCATION]>[HOST]
+
+  example:
+		toramaru -p 8080 -r "/api>localhost:8071" -r "/>localhost:8070"
 `
-
-type Toramaru struct {
-	Port   int
-	Routes []route.Route
-	Help   bool
-}
-
-const EOA = "__EOA__" // end of args
-func argparse(args []string) (toramaru *Toramaru, err error) {
-	toramaru = &Toramaru{Help: false}
-	args = append(args, EOA)
-	for i := 1; i < len(args)-1; i += 2 {
-		opt := args[i]
-		arg := args[i+1]
-		switch {
-		case opt == "-h" || opt == "--help":
-			toramaru.Help = true
-
-		case opt == "-p" && arg != EOA:
-			toramaru.Port, err = strconv.Atoi(arg)
-			if err != nil {
-				return nil, errors.New("port can not convert to int")
-			}
-
-		case opt == "-r" && arg != EOA:
-			r, err := route.Parse(arg)
-			if err != nil {
-				return nil, err
-			}
-			toramaru.Routes = append(toramaru.Routes, *r)
-
-		default:
-			return nil, errors.New("invalid options")
-		}
-	}
-	return toramaru, nil
-}
 
 func main() {
 	toramaru, err := argparse(os.Args)
@@ -69,6 +32,9 @@ func main() {
 		os.Exit(-1)
 	case toramaru.Help:
 		fmt.Print(help)
+		os.Exit(0)
+	case toramaru.Version:
+		fmt.Println(version)
 		os.Exit(0)
 	}
 
