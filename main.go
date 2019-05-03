@@ -3,23 +3,18 @@ package main
 import (
 	"errors"
 	"fmt"
+	"github.com/uryoya/toramaru/route"
 	"log"
 	"net/http"
 	"net/http/httputil"
-	"net/url"
 	"os"
 	"regexp"
 	"strconv"
 )
 
-type Route struct {
-	Host string
-	Path string
-}
-
 type Toramaru struct {
 	Port   int
-	Routes []Route
+	Routes []route.Route
 	Help   bool
 }
 
@@ -41,11 +36,11 @@ func argparse(args []string) (toramaru *Toramaru, err error) {
 			}
 
 		case opt == "-r" && arg != EOA:
-			url, err := url.Parse("http://" + arg) // TODO: ngnxみたいなルール作る
-			if err != nil || url.Host == "" || url.Path == "" {
-				return nil, errors.New("route can not parse")
+			r, err := route.Parse(arg)
+			if err != nil {
+				return nil, err
 			}
-			toramaru.Routes = append(toramaru.Routes, Route{url.Host, url.Path})
+			toramaru.Routes = append(toramaru.Routes, *r)
 
 		default:
 			return nil, errors.New("invalid options")
@@ -80,7 +75,7 @@ func main() {
 		request.URL.Scheme = "http"
 
 		for _, route := range toramaru.Routes {
-			matched, _ := regexp.MatchString(route.Path+`.*`, request.URL.Path)
+			matched, _ := regexp.MatchString(route.Location+`.*`, request.URL.Path)
 			if matched {
 				request.URL.Host = route.Host
 				break
