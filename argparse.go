@@ -7,13 +7,6 @@ import (
 	"github.com/uryoya/toramaru/route"
 )
 
-type Toramaru struct {
-	Port    int
-	Routes  []route.Route
-	Help    bool
-	Version bool
-}
-
 const EOA = "__EOA__" // end of args
 func argparse(args []string) (toramaru *Toramaru, err error) {
 	// 優先するオプション
@@ -54,6 +47,8 @@ func argparse(args []string) (toramaru *Toramaru, err error) {
 			return nil, errors.New("invalid options")
 		}
 	}
+
+	toramaru.Init()
 	return toramaru, nil
 }
 

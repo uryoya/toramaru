@@ -6,6 +6,9 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"os"
+	"sort"
+
+	"github.com/uryoya/toramaru/route"
 )
 
 const version string = "0.1.0-SNAPSHOT"
@@ -23,6 +26,19 @@ const help string = `USAGE: toramaru [OPTIONS...]
   example:
 		toramaru -p 8080 -r "/api>localhost:8071" -r "/>localhost:8070"
 `
+
+type Toramaru struct {
+	Port    int
+	Routes  []route.Route
+	Help    bool
+	Version bool
+}
+
+func (t *Toramaru) Init() {
+	sort.Slice(t.Routes, func(i, j int) bool {
+		return t.Routes[i].Location > t.Routes[j].Location // 降順
+	})
+}
 
 func main() {
 	toramaru, err := argparse(os.Args)
